@@ -1,0 +1,51 @@
+:root {
+    /* Change these variables according to your theme */
+    --primary: #4fc3f7;
+    --accent: #0093c4;
+    --delete: #e53935;
+    --primary-text: #000000;
+    --submit: #4caf50;
+}
+
+.example {
+    background-color: var(--primary);
+}
+.custom-control-input:checked ~ .custom-control-label::before {
+    border-color: var(--delete);
+    background-color: var(--delete);
+  }
+
+.list-group{
+    display: flex;
+    align-items: stretch; /* Default */
+    justify-content: space-between;
+    width: 100%;
+    
+    margin: 0;
+    padding: 0;
+}
+.list-group-item{
+    display: inline-block;
+    flex: 0 1 100%; /* Default */
+    list-style-type: none;
+    background: var(--primary);
+    
+}
+.navbar{
+    background-color: var(--accent);
+}
+.bi-app{
+    background-color: var(--accent);
+}
+.btn-danger{
+    background-color: var(--delete);
+}
+.btn-success{
+    background-color: var(--submit);
+}
+.form-control{
+    background-color: var(--accent);
+}
+#deleteButton{
+    background-color: var(--delete);
+}

@@ -39,7 +39,13 @@ if (isset($_GET['error'])) {
   </form>
   
 </div>
-<!--<button type="submit" class="btn btn-success">New User</button> -->
+<div class="container">
+
+<form action="../views/login.php" method="get">
+    <button type="submit" class="btn btn-success">Go to Login Page</button>
+</form>
+
+</div>
   
 </div>
 

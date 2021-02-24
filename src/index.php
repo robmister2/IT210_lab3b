@@ -63,7 +63,9 @@ if (!$_SESSION['logged_in']) {
     <label class="custom-control-label" for="customSwitch2">Sort by Date</label>
   </div>
 
-<?php
+
+  <ul class="list-group mb-5" id="taskList">
+  <?php
 $mysql_servername = getenv("MYSQL_SERVERNAME");
 $mysql_user = getenv("MYSQL_USER");
 $mysql_password = getenv("MYSQL_PASSWORD");
@@ -81,27 +83,67 @@ if ($conn->connect_error) {
 
 
 $currentUser = $_SESSION['id'];
-$stmt = $conn->prepare("SELECT text, date, FROM task WHERE user_id=?");
-$stmt->bind_param('s', $currentUser); //FIXME WTF
+$stmt = $conn->prepare("SELECT id, text, date, done FROM task WHERE user_id=?");
+$stmt->bind_param('s', $currentUser); 
 if (!$stmt->execute()) {
 	echo ("Statement failed: " . $stmt->error . "<br>");
 }
-$result = $conn->query($stmt);
+$stmt->bind_result($item_id, $name, $date, $done);
+while ($stmt->fetch()){
+    ?>
+    <script>
+    done = '<?php echo $done; ?>';
+    text = '<?php echo $name; ?>';
+    date = '<?php echo $date; ?>';
+    if(done == 1){
+        doneText = text.strike();
+    }
+    if(done == 0){
+        doneText = text;
+    }
 
-if ($result->num_rows > 0) {
-  // output data of each row
-  while($row = $result->fetch_assoc()) {
-    echo "task: " . $row["text"]. " - Date: " . $row["date"];
-  }
-} else {
-  echo "0 results";
+testDate = date;
+finalDate = testDate.replace(/(\d{4})-(\d{1,2})-(\d{1,2})/, '$2/$3/$1');
+
+    </script>
+    <?php
+    $phpDoneText = "<script>document.writeln(doneText);</script>";
+    $phpDoneDate = "<script>document.writeln(finalDate);</script>";
+
+echo'
+     <li class="list-group-item">
+<div class="container">
+  <div class="row">
+    <form action="../actions/update_action.php" method="post">
+    <input hidden name="item_id" value="'.$item_id.'">
+    <input hidden name="done" value="'.$done.'">
+    <button type="submit" class="btn" style="background-color:transparent">
+        <i class="material-icons checkbox"> check_box_outline_blank</i>
+    </button>
+    </form>
+    <div class="col-9">
+    <span> '.$phpDoneText.' </span>
+    </div>
+    <div class="col">
+      <span> '.$phpDoneDate.' </span>
+    </div>
+    <form action="../actions/delete_action.php" method="post">
+    <input hidden name="item_id" value="'.$item_id.'">
+    <button type="submit" class="btn" style="background-color:transparent" >
+    <i class="material-icons delete-button"> remove_circle</i>
+    </button>
+    </form>
+
+  </div>
+</div>
+</li>';
 }
+
 
 $stmt->close();
 
 ?>
 
-  <ul class="list-group mb-5" id="taskList">
     
   </ul>
 

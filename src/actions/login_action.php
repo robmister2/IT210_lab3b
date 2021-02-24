@@ -38,12 +38,25 @@ if (!$found) { // if user does not exist
 	header("Location: ../views/login.php?error=Username does not exist :c");
 	exit();
 }
+$stmt->close();
 
-$passTest = password_verify($password_1, $user['password']);
+$stmt = $conn->prepare("SELECT password FROM user WHERE username=?");
+$stmt->bind_param('s', $username);
+$stmt->execute();
+$stmt->bind_result($found);
+$stmt->fetch();
+
+$passTest = password_verify($password_1, $found);
 if (!$passTest) { // if password is bad
 	header("Location: ../views/login.php?error=Incorrect password");
 	exit();
 }
+$stmt->close();
+
+$user_check_query = "SELECT * FROM user WHERE username='$username'"; //FIXME MAKE THIS PREPARED
+$result = mysqli_query($conn, $user_check_query);
+$user = mysqli_fetch_assoc($result);
+
 
 $id = $user['id'];
 $stmt = $conn->prepare("UPDATE `user` SET `logged_in`=true WHERE ID = $id");
